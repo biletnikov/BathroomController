@@ -54,7 +54,7 @@
 #define F_CPU 12000000UL
 
 // “екуща€ верси€ приложени€
-#define AP_VERSION "1.1"
+#define AP_VERSION "1.2"
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -541,9 +541,13 @@ void music(uint8_t on_flag)
 
 void activate_relax_mode()
 {
-	InterState|=(1<<STATE_RELAX_LIGHT);	
-	light(ON);
-	uart_puts_p(msg_relax_mode_activated);
+	// јктиваци€ релакс режима возможно только если в данный момент дверь закрыта
+	if (!CHECK_DOOR_OPENED)
+	{
+		InterState|=(1<<STATE_RELAX_LIGHT);
+		light(ON);
+		uart_puts_p(msg_relax_mode_activated);
+	}
 }
 
 void deactivate_relax_mode()
